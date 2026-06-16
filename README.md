@@ -100,8 +100,7 @@ This project was created to practice:
 
 ## Possible Improvements
 
-* Add unit tests for business logic
-* Replace infinite simulation loop with configurable iterations
+* Add unit tests for worker and payment logic
 * Improve naming consistency
 * Add a console output example
 * Convert the playground into a small iOS app with UI

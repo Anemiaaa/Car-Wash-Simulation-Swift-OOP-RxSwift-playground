@@ -1,4 +1,3 @@
-import UIKit
 import Foundation
 
 import PlaygroundSupport
@@ -22,5 +21,5 @@ let controller = CarWashController(
     log: log,
     carWash: carWash
 )
-controller.startWork()
+controller.startWork(iterations: 3, carsPerIteration: 10)
 //print("smt")

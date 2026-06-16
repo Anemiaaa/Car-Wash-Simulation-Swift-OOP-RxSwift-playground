@@ -5,7 +5,7 @@ import RxCocoa
 public enum ChangePriceResult {
     
     case success
-    case isNotGreatThanZero
+    case isNotGreaterThanZero
 }
 
 public enum States {
@@ -55,29 +55,31 @@ public class CarWashController {
     // MARK: -
     // MARK: Public
     
-    public func startWork() {
+    public func startWork(iterations: Int = 5, carsPerIteration: Int = 20) {
+        guard iterations > 0, carsPerIteration > 0 else { return }
         guard let chief = self.chief else { return }
 
         let queue = DispatchQueue(label: "io.washing", attributes: .concurrent)
-        
-        while(true) {
-            self.takeDirtyCars(count: 20)
-            
+
+        for iteration in 1...iterations {
+            print("\n--- Iteration \(iteration) ---")
+
+            self.takeDirtyCars(count: carsPerIteration)
+
             self.workers
                 .compactMap { $0.object as? Washer }
                 .forEach { washer in
                     queue.async {
                         washer.search { car in
                             guard let car = car else { return }
-                            
                             washer.work(processable: car)
                         }
                     }
                 }
-            
+
             sleep(5)
-            
-            print("\nchief earned \(chief.money)\n")
+
+            print("\nChief earned \(chief.money)\n")
         }
     }
     
@@ -125,7 +127,7 @@ public class CarWashController {
             self.carWash.priceWaterLiter = literPrice
         }
         
-        return isPositive ? .success : .isNotGreatThanZero
+        return isPositive ? .success : .isNotGreaterThanZero
     }
     
     public func appoint(subordinates: inout [Washer]) {
@@ -141,13 +143,12 @@ public class CarWashController {
         washers.forEach {
             $0.carCleanableStatesHandler.bind { washer in
                 self.lock.lock()
-                
+                defer { self.lock.unlock() }
+
                 switch washer {
-                    case .carServiced(car: let car, result: let result):
-                        self.washerStatesHandling(car: car, result: result)
+                case .carServiced(car: let car, result: let result):
+                    self.washerStatesHandling(car: car, result: result)
                 }
-                
-                self.lock.unlock()
             }
         }
     }
@@ -161,13 +162,12 @@ public class CarWashController {
             .forEach {
                 $0.managerStatesHandler.bind { manager in
                 self.lock.lock()
-                
+                defer { self.lock.unlock() }
+
                 switch manager {
                 case .finishedWork(worker: let subordinate):
                     self.startWorkSupervisor(of: subordinate)
                 }
-                    
-                self.lock.unlock()
             }
             .disposed(by: self.disposeBag)
         }
