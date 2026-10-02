@@ -63,13 +63,13 @@ This project is designed to run on macOS with Xcode.
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/Anemiaaa/Car-wash.git
+git clone https://github.com/Anemiaaa/Car-Wash-Simulation-Swift-OOP-RxSwift-playground.git
 ```
 
 2. Open the project folder:
 
 ```bash
-cd Car-wash/rxCarWash
+cd Car-Wash-Simulation-Swift-OOP-RxSwift-playground/rxCarWash
 ```
 
 3. Install dependencies:
